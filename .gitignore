@@ -1,0 +1,65 @@
+# Logs
+*.log
+logs/
+LogFiles/
+
+# User-specific files
+*.user
+*.lock.json
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Dependency directories
+/bin/
+/obj/
+/packages/
+/wwwroot/lib/
+
+# Visual Studio
+.vscode/
+.vs/
+*.vcxproj.user
+*.pdb
+_ReSharper*
+*.ncrunch*
+*.ndunit.*
+*.nunit.*
+TestResult.xml
+build/
+BuildArtifacts/
+
+# Rider
+.idea/
+*.sln.iml
+*.idea/misc.xml
+*.idea/modules.xml
+*.idea/workspace.xml
+*.idea/tasks.xml
+
+# ASP.NET files
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Local.json
+appsettings.*.json
+secrets.json
+
+# Publish outputs
+publish/
+out/
+
+# Windows-specific files
+*.db
+*.pdb
+*.cache
+*.log
+
+# DotNet specific files
+*.runtimeconfig.dev.json
+project.lock.json
+project.fragment.lock.json
+artifacts/

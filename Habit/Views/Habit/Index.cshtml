@@ -1,0 +1,207 @@
+﻿@model List<Habit.Models.Habits>
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Meus Hábitos</h1>
+
+    <!-- Filtro de exibição -->
+    <div class="d-flex justify-content-center mb-4">
+        <span class="fw-bold me-3">Exibição de Hábitos:</span>
+        <button id="allButton" class="btn btn-outline-primary me-2">Todos</button>
+        <button id="dailyButton" class="btn btn-outline-primary">Diários</button>
+    </div>
+
+    <!-- Botão para criar hábito -->
+    <div class="text-center mb-4">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createHabitModal">
+            +
+        </button>
+    </div>
+
+    <!-- Filtro de data -->
+    <div id="dateFilter" class="date-navigation mb-4 text-center" style="@((string)ViewBag.Filter == "All" ? "display:none;" : "")">
+        <button onclick="changeDate(-1)" class="btn btn-secondary me-2">&#x3C;</button>
+        <span class="fw-bold">@ViewBag.CurrentDate.ToShortDateString()</span>
+        <button onclick="changeDate(1)" class="btn btn-secondary ms-2">&#x3E;</button>
+    </div>
+
+    <!-- Lista de hábitos em tabela -->
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Local</th>
+                        <th>Data e Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var habit in Model)
+                    {
+                        <tr>
+                            <td>@habit.Name</td>
+                            <td>@habit.Place</td>
+                            <td>@habit.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="openEditModal(@habit.Id, '@habit.Name', '@habit.Place', '@habit.StartTime', '@habit.EndTime')">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <form asp-action="Delete" asp-controller="Habit" method="post" onsubmit="return confirm('Deseja excluir este hábito?')" style="display: inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@habit.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted text-center">Nenhum hábito encontrado.</p>
+    }
+</div>
+
+<!-- Modais -->
+<!-- Modal para Criar Hábito -->
+<div class="modal fade" id="createHabitModal" tabindex="-1" aria-labelledby="createHabitModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createHabitModalLabel">Adicionar Hábito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="@Url.Action("Create", "Habit")">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="habitName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="habitName" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="habitPlace" class="form-label">Local</label>
+                        <input type="text" class="form-control" id="habitPlace" name="Place" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="habitStartTime" class="form-label">Data e Hora de Início</label>
+                        <input type="datetime-local" class="form-control" id="habitStartTime" name="StartTime" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="habitEndTime" class="form-label">Data e Hora de Fim</label>
+                        <input type="datetime-local" class="form-control" id="habitEndTime" name="EndTime" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar Hábito -->
+<div class="modal fade" id="editHabitModal" tabindex="-1" aria-labelledby="editHabitModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editHabitModalLabel">Editar Hábito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="@Url.Action("Edit", "Habit")">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editHabitId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editHabitName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="editHabitName" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editHabitPlace" class="form-label">Local</label>
+                        <input type="text" class="form-control" id="editHabitPlace" name="Place" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editHabitStartTime" class="form-label">Data e Hora de Início</label>
+                        <input type="datetime-local" class="form-control" id="editHabitStartTime" name="StartTime" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editHabitEndTime" class="form-label">Data e Hora de Fim</label>
+                        <input type="datetime-local" class="form-control" id="editHabitEndTime" name="EndTime" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fecha todos os modais abertos
+    function closeAllModals() {
+        const modals = document.querySelectorAll('.modal.show');
+        modals.forEach((modal) => {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+    }
+
+    // Altera a data no filtro de navegação
+    function changeDate(days) {
+        closeAllModals();
+
+        const currentDate = new Date('@ViewBag.CurrentDate.ToString("yyyy-MM-dd")');
+        currentDate.setDate(currentDate.getDate() + days);
+        const selectedFilter = '@ViewBag.Filter';
+        window.location.href = '@Url.Action("Index", "Habit")?date=' + currentDate.toISOString().split('T')[0] + '&filter=' + selectedFilter;
+    }
+
+    // Configura botão para exibir todos os hábitos
+    document.getElementById("allButton").addEventListener("click", () => {
+        window.location.href = '@Url.Action("Index", "Habit")?filter=All';
+    });
+
+    // Configura botão para exibir apenas hábitos diários
+    document.getElementById("dailyButton").addEventListener("click", () => {
+        window.location.href = '@Url.Action("Index", "Habit")?filter=Daily';
+    });
+
+    // Abre o modal de edição de hábito
+    function openEditModal(id, name, place, startTime, endTime) {
+        closeAllModals();
+
+        document.getElementById("editHabitId").value = id;
+        document.getElementById("editHabitName").value = name;
+        document.getElementById("editHabitPlace").value = place;
+
+        // Valida e formata o startTime
+        if (startTime && !isNaN(new Date(startTime).getTime())) {
+            const formattedStartTime = new Date(startTime).toISOString().slice(0, 16);
+            document.getElementById("editHabitStartTime").value = formattedStartTime;
+        } else {
+            document.getElementById("editHabitStartTime").value = "";
+        }
+
+        // Valida e formata o endTime
+        if (endTime && !isNaN(new Date(endTime).getTime())) {
+            const formattedEndTime = new Date(endTime).toISOString().slice(0, 16);
+            document.getElementById("editHabitEndTime").value = formattedEndTime;
+        } else {
+            document.getElementById("editHabitEndTime").value = "";
+        }
+
+        // Abre o modal de edição
+        const editModal = new bootstrap.Modal(document.getElementById("editHabitModal"));
+        editModal.show();
+    }
+</script>

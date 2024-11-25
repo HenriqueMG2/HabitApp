@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  habit:
+    build:
+      context: .
+      dockerfile: Habit/Dockerfile
+    ports:
+      - "8080:8080" # Porta HTTP do host mapeada para o container
+      - "8081:8081" # Porta HTTPS do host mapeada para o container
