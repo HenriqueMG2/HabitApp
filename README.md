@@ -1,6 +1,6 @@
-# Projeto: Sistema ASP.NET MVC com Páginas Blazor
+# Projeto: Habits App
 
-Este repositório contém o código-fonte de uma aplicação ASP.NET MVC com páginas Blazor para criação e gerenciamento de métodos. O projeto foi desenvolvido como parte da disciplina **Trending Topics Information** do curso de Jogos Digitais na Unisinos, com foco em tecnologias de computação em nuvem.
+Este repositório contém o código-fonte de uma aplicação ASP.NET MVC com páginas Blazor para criação e gerenciamento de hábitos. O projeto foi desenvolvido como parte da disciplina **Trending Topics Information** do curso de Jogos Digitais na Unisinos, com foco em tecnologias de computação em nuvem.
 
 ## Funcionalidades
 
